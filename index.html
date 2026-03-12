@@ -3,626 +3,583 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenGradient Chat — Verifiable AI by OpenGradient</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<title>OpenGradient Chat — Verifiable AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #07050f;
-  --sidebar: #0c0a18;
-  --card: rgba(255,255,255,0.03);
-  --border: rgba(255,255,255,0.07);
-  --p: #8b5cf6;
-  --p2: #6d28d9;
+  --bg: #05030e;
+  --sbg: #080614;
+  --p: #7c3aed;
+  --p2: #9333ea;
+  --pl: #a855f7;
   --c: #06b6d4;
   --g: #10b981;
-  --text: #94a3b8;
-  --white: #f1f5f9;
-  --user-bg: rgba(109,40,217,0.15);
-  --ai-bg: rgba(6,182,212,0.06);
+  --y: #f59e0b;
+  --card: rgba(255,255,255,0.03);
+  --b1: rgba(255,255,255,0.06);
+  --b2: rgba(255,255,255,0.1);
+  --t1: #94a3b8;
+  --t2: #475569;
+  --w: #f1f5f9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);
+  font-family:'Space Grotesk',sans-serif;
+  color:var(--t1);
+  display:flex;height:100vh;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height: 100%; }
-
-body {
-  background: var(--bg);
-  font-family: 'IBM Plex Mono', monospace;
-  color: var(--text);
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
+/* BG */
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:orbF 10s ease-in-out infinite}
+.o1{width:600px;height:600px;background:rgba(124,58,237,0.07);top:-200px;left:-150px}
+.o2{width:500px;height:500px;background:rgba(6,182,212,0.05);bottom:-200px;right:-150px;animation-delay:4s}
+.o3{width:350px;height:350px;background:rgba(16,185,129,0.04);top:40%;left:40%;animation-delay:7s}
+@keyframes orbF{0%,100%{transform:translate(0,0)}40%{transform:translate(30px,-20px)}70%{transform:translate(-20px,25px)}}
+.grid{
+  position:fixed;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px);
+  background-size:50px 50px;pointer-events:none;z-index:0;
 }
 
-/* Mesh BG */
-body::before {
-  content: '';
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background:
-    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(109,40,217,0.1) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(6,182,212,0.08) 0%, transparent 60%);
-  pointer-events: none; z-index: 0;
+/* SIDEBAR */
+.sidebar{
+  width:270px;background:var(--sbg);
+  border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;
+  flex-shrink:0;position:relative;z-index:2;
+}
+.sidebar::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(124,58,237,0.6),rgba(6,182,212,0.4),transparent);
 }
 
-/* ── SIDEBAR ── */
-.sidebar {
-  width: 260px;
-  background: var(--sidebar);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+.logo{padding:20px 18px 16px;border-bottom:1px solid var(--b1)}
+.logo-r{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.logo-box{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;box-shadow:0 0 20px rgba(124,58,237,0.35);
+}
+.logo-t{font-size:15px;font-weight:700;color:var(--w);letter-spacing:.3px}
+.logo-s{font-size:9px;color:var(--pl);letter-spacing:4px;padding-left:46px}
+
+.sec-h{padding:14px 18px 6px;font-size:9px;letter-spacing:4px;color:var(--t2)}
+
+.model{
+  margin:3px 10px;padding:11px 13px;
+  border-radius:11px;border:1px solid transparent;
+  cursor:pointer;transition:all .2s;position:relative;
+}
+.model::before{
+  content:'';position:absolute;left:0;top:10%;bottom:10%;
+  width:3px;border-radius:2px;
+  background:linear-gradient(180deg,var(--p),var(--c));
+  opacity:0;transition:opacity .2s;
+}
+.model:hover{background:rgba(255,255,255,0.025);border-color:var(--b2)}
+.model.active{background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.28)}
+.model.active::before{opacity:1}
+.mn{font-size:13px;font-weight:600;color:var(--w);margin-bottom:2px}
+.mp{font-size:10px;color:var(--t2)}
+.mt{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:8px;letter-spacing:1px;padding:2px 7px;
+  border-radius:8px;margin-top:5px;
+  background:rgba(16,185,129,0.1);color:var(--g);
+  border:1px solid rgba(16,185,129,0.18);
 }
 
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid var(--border);
+.netcard{
+  margin:6px 10px;padding:13px;
+  background:rgba(6,182,212,0.04);
+  border:1px solid rgba(6,182,212,0.13);border-radius:11px;
 }
+.nt{font-size:9px;color:var(--t2);margin-bottom:7px;letter-spacing:2px}
+.nr{display:flex;align-items:center;justify-content:space-between;font-size:11px}
+.ns{display:flex;align-items:center;gap:5px;color:var(--g)}
+.dot{
+  width:7px;height:7px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 8px var(--g);
+  animation:dp 2s ease-in-out infinite;
+}
+@keyframes dp{0%,100%{box-shadow:0 0 4px var(--g)}50%{box-shadow:0 0 14px var(--g),0 0 24px rgba(16,185,129,0.25)}}
 
-.logo-row {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 4px;
-}
+.sidebar-bot{margin-top:auto;padding:14px 10px;border-top:1px solid var(--b1)}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sbox{background:var(--card);border:1px solid var(--b1);border-radius:9px;padding:9px 6px;text-align:center}
+.sn{font-size:17px;font-weight:700;color:var(--pl);line-height:1;font-family:'JetBrains Mono',monospace}
+.sl{font-size:8px;color:var(--t2);margin-top:3px;letter-spacing:1px}
+.cred{text-align:center;margin-top:8px;font-size:9px;color:var(--t2);letter-spacing:2px}
+.cred span{color:var(--pl)}
 
-.logo-icon {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, var(--p2), var(--c));
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;position:relative;z-index:1;min-width:0}
 
-.logo-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px; font-weight: 700;
-  color: var(--white);
+.topbar{
+  padding:13px 22px;border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:rgba(5,3,14,0.85);backdrop-filter:blur(12px);
 }
-
-.logo-tag {
-  font-size: 9px; color: var(--p); letter-spacing: 3px;
-  padding-left: 44px;
-}
-
-.sidebar-section {
-  padding: 16px 20px 8px;
-  font-size: 9px; letter-spacing: 4px; color: rgba(148,163,184,0.4);
-}
-
-.model-card {
-  margin: 0 12px 6px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--card);
-}
-.model-card:hover { border-color: rgba(139,92,246,0.3); }
-.model-card.active {
-  border-color: rgba(139,92,246,0.5);
-  background: rgba(139,92,246,0.08);
-}
-
-.model-name {
-  font-size: 12px; color: var(--white); font-weight: 500;
-  margin-bottom: 3px;
-}
-.model-meta { font-size: 10px; color: var(--text); }
-.model-badge {
-  display: inline-block; font-size: 8px; letter-spacing: 2px;
-  padding: 2px 6px; border-radius: 4px; margin-top: 5px;
-  background: rgba(16,185,129,0.12); color: var(--g);
-  border: 1px solid rgba(16,185,129,0.2);
-}
-
-.sidebar-bottom {
-  margin-top: auto;
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-}
-
-.stats-row {
-  display: flex; gap: 8px;
-}
-.stat-mini {
-  flex: 1; background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 8px; text-align: center;
-}
-.stat-mini-val {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px; font-weight: 700; color: var(--p);
-}
-.stat-mini-label { font-size: 9px; color: var(--text); margin-top: 2px; }
-
-/* ── MAIN CHAT ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-}
-
-/* TOP BAR */
-.topbar {
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0;
-}
-
-.topbar-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 700; color: var(--white);
-}
-.topbar-sub { font-size: 10px; color: var(--text); margin-top: 2px; }
-
-.live-badge {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 9px; letter-spacing: 3px; color: var(--g);
-  border: 1px solid rgba(16,185,129,0.25);
-  padding: 5px 12px; border-radius: 20px;
-  background: rgba(16,185,129,0.06);
-}
-.live-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--g); box-shadow: 0 0 8px var(--g);
-  animation: blink 1.2s ease-in-out infinite;
+.tl{display:flex;flex-direction:column;gap:2px}
+.tm{font-size:14px;font-weight:700;color:var(--w);display:flex;align-items:center;gap:8px}
+.mi{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--c));box-shadow:0 0 8px var(--p);animation:dp 2s ease-in-out infinite}
+.ts{font-size:10px;color:var(--t2);letter-spacing:.5px}
+.badge{
+  display:flex;align-items:center;gap:5px;padding:5px 13px;
+  border-radius:20px;background:rgba(16,185,129,0.07);
+  border:1px solid rgba(16,185,129,0.18);
+  font-size:9px;letter-spacing:2px;color:var(--g);
 }
 
 /* MESSAGES */
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.1) transparent;
+.msgs{
+  flex:1;overflow-y:auto;padding:24px 22px;
+  display:flex;flex-direction:column;gap:20px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.07) transparent;
+}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:2px}
+
+/* WELCOME */
+.welcome{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;flex:1;text-align:center;
+  padding:30px 20px;gap:18px;animation:fadeUp .6s ease;
+}
+.wlogo{
+  width:68px;height:68px;border-radius:18px;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  box-shadow:0 0 40px rgba(124,58,237,0.3),0 0 80px rgba(124,58,237,0.08);
+  animation:wf 4s ease-in-out infinite;
+}
+@keyframes wf{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.wh{font-size:clamp(22px,3.5vw,32px);font-weight:700;color:var(--w);line-height:1.25}
+.wh em{
+  font-style:normal;
+  background:linear-gradient(90deg,var(--pl),var(--c));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.wd{font-size:13px;color:var(--t1);max-width:400px;line-height:1.8}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 13px;border-radius:20px;
+  border:1px solid var(--b2);background:var(--card);
+  font-size:11px;color:var(--t1);transition:all .2s;cursor:default;
+}
+.chip:hover{border-color:rgba(124,58,237,0.4);color:var(--w);background:rgba(124,58,237,0.06)}
+.suggs{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;width:100%;max-width:540px}
+.sug{
+  background:var(--card);border:1px solid var(--b1);
+  border-radius:13px;padding:13px 15px;
+  color:var(--t1);font-family:'Space Grotesk',sans-serif;
+  font-size:12px;text-align:left;cursor:pointer;
+  line-height:1.5;transition:all .2s;
+}
+.sug:hover{border-color:rgba(124,58,237,0.4);color:var(--w);background:rgba(124,58,237,0.06);transform:translateY(-2px)}
+
+/* MESSAGE */
+.msg{display:flex;gap:12px;animation:msgIn .3s cubic-bezier(.16,1,.3,1)}
+.msg.user{flex-direction:row-reverse}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.av{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;margin-top:2px;
+}
+.msg.user .av{background:linear-gradient(135deg,var(--p),var(--pl));box-shadow:0 0 14px rgba(124,58,237,0.3)}
+.msg.ai .av{background:linear-gradient(135deg,#0891b2,var(--c));box-shadow:0 0 14px rgba(6,182,212,0.3)}
+.mb{max-width:74%;display:flex;flex-direction:column;gap:7px}
+.msg.user .mb{align-items:flex-end}
+.bub{padding:13px 17px;border-radius:17px;font-size:13.5px;line-height:1.8;position:relative}
+.msg.user .bub{
+  background:rgba(124,58,237,0.12);
+  border:1px solid rgba(124,58,237,0.2);
+  color:var(--w);border-bottom-right-radius:4px;
+}
+.msg.ai .bub{
+  background:rgba(6,182,212,0.05);
+  border:1px solid rgba(6,182,212,0.1);
+  color:#cbd5e1;border-bottom-left-radius:4px;
 }
 
-.messages::-webkit-scrollbar { width: 4px; }
-.messages::-webkit-scrollbar-track { background: transparent; }
-.messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-
-/* Welcome screen */
-.welcome {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; flex: 1;
-  text-align: center; padding: 40px 20px;
-  gap: 16px;
+/* AI text formatting */
+.msg.ai .bub strong{color:var(--w);font-weight:600}
+.msg.ai .bub code{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  background:rgba(124,58,237,0.15);color:var(--pl);
+  padding:1px 6px;border-radius:5px;
 }
-
-.welcome-icon {
-  width: 64px; height: 64px;
-  background: linear-gradient(135deg, var(--p2), var(--c));
-  border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-  box-shadow: 0 0 40px rgba(109,40,217,0.3);
-  animation: float 3s ease-in-out infinite;
+.msg.ai .bub .hl{color:var(--c);font-weight:500}
+.msg.ai .bub .li{
+  display:flex;gap:8px;margin:3px 0;padding-left:2px;
 }
+.msg.ai .bub .li::before{content:'▸';color:var(--pl);flex-shrink:0}
+.msg.ai .bub h3{color:var(--w);font-size:14px;margin:10px 0 5px}
 
-@keyframes float {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+.tx{
+  display:flex;align-items:center;gap:7px;
+  font-size:10px;color:var(--g);cursor:pointer;
+  transition:opacity .2s;letter-spacing:.5px;font-family:'JetBrains Mono',monospace;
 }
-
-.welcome h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: 22px; font-weight: 800; color: var(--white);
+.tx:hover{opacity:.65}
+.txi{
+  width:19px;height:19px;border-radius:5px;
+  background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:9px;
 }
 
-.welcome p { font-size: 12px; color: var(--text); line-height: 1.8; max-width: 380px; }
-
-.feature-pills {
-  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-  margin-top: 8px;
-}
-.pill {
-  font-size: 10px; letter-spacing: 2px;
-  padding: 6px 14px; border-radius: 20px;
-  border: 1px solid var(--border); color: var(--text);
-  background: var(--card);
-}
-.pill.active { border-color: rgba(139,92,246,0.4); color: var(--p); background: rgba(139,92,246,0.08); }
-
-.suggest-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 10px; width: 100%; max-width: 500px; margin-top: 8px;
-}
-.suggest-btn {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; padding: 12px 14px;
-  color: var(--text); font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px; text-align: left; cursor: pointer;
-  transition: all 0.2s; line-height: 1.5;
-}
-.suggest-btn:hover {
-  border-color: rgba(139,92,246,0.3);
-  color: var(--white); background: rgba(139,92,246,0.06);
-}
-
-/* Message bubbles */
-.msg { display: flex; gap: 12px; animation: msgIn 0.3s ease; }
-.msg.user { flex-direction: row-reverse; }
-
-@keyframes msgIn {
-  from { opacity:0; transform: translateY(8px); }
-  to { opacity:1; transform: translateY(0); }
-}
-
-.msg-avatar {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; flex-shrink: 0;
-}
-.msg.user .msg-avatar { background: linear-gradient(135deg, var(--p2), var(--p)); }
-.msg.ai .msg-avatar { background: linear-gradient(135deg, #0e7490, var(--c)); }
-
-.msg-content { max-width: 70%; display: flex; flex-direction: column; gap: 6px; }
-.msg.user .msg-content { align-items: flex-end; }
-
-.msg-bubble {
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-size: 13px; line-height: 1.7;
-}
-.msg.user .msg-bubble {
-  background: var(--user-bg);
-  border: 1px solid rgba(109,40,217,0.25);
-  color: var(--white);
-  border-bottom-right-radius: 4px;
-}
-.msg.ai .msg-bubble {
-  background: var(--ai-bg);
-  border: 1px solid rgba(6,182,212,0.15);
-  color: var(--white);
-  border-bottom-left-radius: 4px;
-}
-
-.msg-tx {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 9px; color: var(--g); letter-spacing: 2px;
-  cursor: pointer; transition: opacity 0.2s;
-}
-.msg-tx:hover { opacity: 0.7; }
-.msg-tx-icon { font-size: 10px; }
-
-/* Typing indicator */
-.typing .msg-bubble {
-  display: flex; align-items: center; gap: 4px;
-  padding: 14px 18px;
-}
-.typing-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--c); opacity: 0.6;
-  animation: typingBounce 1.2s ease-in-out infinite;
-}
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typingBounce {
-  0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-6px); opacity: 1; }
-}
+/* TYPING */
+.typing .bub{padding:15px 18px;display:flex;align-items:center;gap:5px}
+.td{width:7px;height:7px;border-radius:50%;background:var(--c);animation:tb 1.4s ease-in-out infinite}
+.td:nth-child(2){animation-delay:.18s}
+.td:nth-child(3){animation-delay:.36s}
+@keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-9px);opacity:1}}
 
 /* INPUT */
-.input-area {
-  padding: 16px 24px 20px;
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
+.input-area{
+  padding:14px 22px 18px;border-top:1px solid var(--b1);
+  flex-shrink:0;background:rgba(5,3,14,0.88);backdrop-filter:blur(12px);
 }
-
-.input-wrap {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  display: flex; align-items: flex-end; gap: 10px;
-  padding: 12px 14px;
-  transition: border-color 0.2s;
+.ibox{
+  background:rgba(255,255,255,0.035);border:1px solid var(--b2);
+  border-radius:15px;display:flex;align-items:flex-end;gap:9px;
+  padding:13px 14px;transition:border-color .3s,box-shadow .3s;
 }
-.input-wrap:focus-within { border-color: rgba(139,92,246,0.4); }
-
-.chat-input {
-  flex: 1; background: transparent; border: none; outline: none;
-  color: var(--white); font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px; resize: none; line-height: 1.6;
-  max-height: 120px; min-height: 24px;
+.ibox:focus-within{border-color:rgba(124,58,237,0.5);box-shadow:0 0 0 3px rgba(124,58,237,0.07)}
+textarea{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--w);font-family:'Space Grotesk',sans-serif;
+  font-size:14px;resize:none;line-height:1.6;
+  max-height:130px;min-height:26px;
 }
-.chat-input::placeholder { color: rgba(148,163,184,0.4); }
-
-.send-btn {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--p2), var(--c));
-  border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; flex-shrink: 0;
-  transition: all 0.2s;
-  box-shadow: 0 0 15px rgba(109,40,217,0.3);
+textarea::placeholder{color:rgba(148,163,184,.3)}
+.sbtn{
+  width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;transition:all .2s;
+  box-shadow:0 0 18px rgba(124,58,237,0.28);
 }
-.send-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(109,40,217,0.5); }
-.send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-.input-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-top: 8px; padding: 0 2px;
+.sbtn:hover:not(:disabled){transform:scale(1.08);box-shadow:0 0 28px rgba(124,58,237,0.5)}
+.sbtn:disabled{opacity:.4;cursor:not-allowed}
+.ifooter{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:7px;padding:0 3px;
 }
-.input-note { font-size: 9px; color: rgba(148,163,184,0.3); letter-spacing: 2px; }
-.tx-count { font-size: 9px; color: var(--g); letter-spacing: 2px; }
+.ihint{font-size:10px;color:var(--t2);letter-spacing:.5px}
+.txc{font-size:10px;color:var(--g);letter-spacing:.5px}
 
-/* MOBILE */
-@media (max-width: 640px) {
-  .sidebar { display: none; }
-  .msg-content { max-width: 85%; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Loading overlay */
+.loading-overlay{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:999;gap:16px;transition:opacity .5s;
 }
-
-/* ANIMATIONS */
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-@keyframes fadeUp {
-  from { opacity:0; transform: translateY(16px); }
-  to { opacity:1; transform: translateY(0); }
+.loading-logo{
+  width:60px;height:60px;border-radius:16px;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;box-shadow:0 0 30px rgba(124,58,237,0.4);
+  animation:wf 2s ease-in-out infinite;
 }
+.loading-text{font-size:13px;color:var(--t1);letter-spacing:3px}
+.loading-bar{width:200px;height:2px;background:var(--b1);border-radius:2px;overflow:hidden}
+.loading-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--c));width:0;animation:lf 1.5s ease forwards}
+@keyframes lf{to{width:100%}}
 
-.sidebar { animation: fadeUp 0.5s ease; }
-.main { animation: fadeUp 0.5s ease 0.1s backwards; }
+@media(max-width:640px){
+  .sidebar{display:none}
+  .mb{max-width:88%}
+  .suggs{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
+<!-- Loading -->
+<div class="loading-overlay" id="lo">
+  <div class="loading-logo">⬡</div>
+  <div class="loading-text">CONNECTING TO NOVA TESTNET</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
+<div class="bg">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+<div class="grid"></div>
+
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-row">
-      <div class="logo-icon">⬡</div>
-      <div class="logo-name">OpenGradient Chat</div>
+  <div class="logo">
+    <div class="logo-r">
+      <div class="logo-box">⬡</div>
+      <div class="logo-t">OpenGradient</div>
     </div>
-    <div class="logo-tag">// VERIFIABLE AI</div>
+    <div class="logo-s">// VERIFIABLE AI</div>
   </div>
 
-  <div class="sidebar-section">// MODELS</div>
-
-  <div class="model-card active" onclick="selectModel(this, 'GPT-4o', 'gpt-4o')">
-    <div class="model-name">GPT-4o</div>
-    <div class="model-meta">OpenAI via OpenGradient</div>
-    <div class="model-badge">TEE VERIFIED</div>
+  <div class="sec-h">// SELECT MODEL</div>
+  <div class="model active" onclick="setModel(this,'gpt-4o','GPT-4o')">
+    <div class="mn">GPT-4o</div>
+    <div class="mp">OpenAI via OpenGradient</div>
+    <div class="mt">⬡ TEE VERIFIED</div>
+  </div>
+  <div class="model" onclick="setModel(this,'llama3','Llama 3 8B')">
+    <div class="mn">Llama 3 8B</div>
+    <div class="mp">Meta via OpenGradient</div>
+    <div class="mt">⬡ TEE VERIFIED</div>
+  </div>
+  <div class="model" onclick="setModel(this,'mistral','Mistral 7B')">
+    <div class="mn">Mistral 7B</div>
+    <div class="mp">Mistral via OpenGradient</div>
+    <div class="mt">⬡ TEE VERIFIED</div>
   </div>
 
-  <div class="model-card" onclick="selectModel(this, 'Llama 3', 'meta-llama/Meta-Llama-3-8B-Instruct')">
-    <div class="model-name">Llama 3 8B</div>
-    <div class="model-meta">Meta via OpenGradient</div>
-    <div class="model-badge">TEE VERIFIED</div>
-  </div>
-
-  <div class="model-card" onclick="selectModel(this, 'Mistral 7B', 'mistralai/Mistral-7B-Instruct-v0.3')">
-    <div class="model-name">Mistral 7B</div>
-    <div class="model-meta">Mistral via OpenGradient</div>
-    <div class="model-badge">TEE VERIFIED</div>
-  </div>
-
-  <div class="sidebar-section">// NETWORK</div>
-  <div style="padding: 0 12px 16px;">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;">
-      <div style="font-size:10px;color:var(--text);margin-bottom:8px;">Nova Testnet</div>
-      <div style="font-size:11px;color:var(--g);display:flex;align-items:center;gap:6px;">
-        <span style="width:6px;height:6px;border-radius:50%;background:var(--g);display:inline-block;box-shadow:0 0 6px var(--g);"></span>
-        Connected
-      </div>
-      <div style="font-size:10px;color:var(--text);margin-top:6px;">1420.405 MHz signal</div>
+  <div class="sec-h">// NETWORK</div>
+  <div class="netcard">
+    <div class="nt">NOVA TESTNET STATUS</div>
+    <div class="nr">
+      <div class="ns"><div class="dot"></div>Connected</div>
+      <div style="font-size:10px;color:var(--t2)">Block #14204</div>
     </div>
   </div>
 
-  <div class="sidebar-bottom">
-    <div class="stats-row">
-      <div class="stat-mini">
-        <div class="stat-mini-val" id="txCount">0</div>
-        <div class="stat-mini-label">TXs</div>
-      </div>
-      <div class="stat-mini">
-        <div class="stat-mini-val" id="msgCount">0</div>
-        <div class="stat-mini-label">MSGS</div>
-      </div>
+  <div class="sidebar-bot">
+    <div class="sgrid">
+      <div class="sbox"><div class="sn" id="sTx">0</div><div class="sl">TXs</div></div>
+      <div class="sbox"><div class="sn" id="sMsg">0</div><div class="sl">MSGS</div></div>
+      <div class="sbox"><div class="sn" id="sMod">4o</div><div class="sl">MODEL</div></div>
     </div>
-    <div style="font-size:9px;color:rgba(148,163,184,0.3);text-align:center;margin-top:10px;letter-spacing:2px;">Built by SAIFUL for OpenGradient</div>
+    <div class="cred">Built by <span>@Saifulbro7</span></div>
   </div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div>
-      <div class="topbar-title" id="topbarModel">GPT-4o // OpenGradient</div>
-      <div class="topbar-sub">Every response is cryptographically verified on-chain</div>
+    <div class="tl">
+      <div class="tm"><div class="mi"></div><span id="topMod">GPT-4o // OpenGradient</span></div>
+      <div class="ts">Every response cryptographically verified on-chain</div>
     </div>
-    <div class="live-badge"><div class="live-dot"></div>ON-CHAIN</div>
+    <div class="badge"><div class="dot"></div>ON-CHAIN LIVE</div>
   </div>
 
-  <div class="messages" id="messages">
-    <!-- Welcome -->
+  <div class="msgs" id="msgs">
     <div class="welcome" id="welcome">
-      <div class="welcome-icon">⬡</div>
-      <h2>OpenGradient Chat</h2>
-      <p>AI inference powered by OpenGradient — every response is verified on-chain with a cryptographic proof.</p>
-      <div class="feature-pills">
-        <div class="pill active">⬡ On-Chain Verified</div>
-        <div class="pill active">🔒 TEE Secured</div>
-        <div class="pill active">🌐 Decentralized</div>
+      <div class="wlogo">⬡</div>
+      <h2 class="wh">The Future of AI is<br><em>Verifiable</em></h2>
+      <p class="wd">Chat with powerful AI models where every response is secured inside a TEE and recorded on-chain. No trust required — just proof.</p>
+      <div class="chips">
+        <div class="chip">⬡ On-Chain Verified</div>
+        <div class="chip">🔒 TEE Secured</div>
+        <div class="chip">🌐 Decentralized</div>
+        <div class="chip">⚡ Real AI</div>
       </div>
-      <div class="suggest-grid">
-        <button class="suggest-btn" onclick="suggest(this)">What is OpenGradient and how does it work?</button>
-        <button class="suggest-btn" onclick="suggest(this)">Explain verifiable AI inference</button>
-        <button class="suggest-btn" onclick="suggest(this)">What makes on-chain AI different?</button>
-        <button class="suggest-btn" onclick="suggest(this)">How does TEE execution work?</button>
+      <div class="suggs">
+        <button class="sug" onclick="sug(this)">What is OpenGradient?</button>
+        <button class="sug" onclick="sug(this)">How does verifiable AI work?</button>
+        <button class="sug" onclick="sug(this)">Tell me about the $OPEN token</button>
+        <button class="sug" onclick="sug(this)">What is a TEE?</button>
       </div>
     </div>
   </div>
 
   <div class="input-area">
-    <div class="input-wrap">
-      <textarea class="chat-input" id="chatInput" placeholder="Ask anything — response will be verified on-chain..." rows="1"></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    <div class="ibox">
+      <textarea id="inp" placeholder="Ask anything — powered by real AI..." rows="1"></textarea>
+      <button class="sbtn" id="sbtn" onclick="send()">➤</button>
     </div>
-    <div class="input-footer">
-      <div class="input-note">// POWERED BY OPENGRADIENT SDK</div>
-      <div class="tx-count" id="txDisplay">0 transactions</div>
+    <div class="ifooter">
+      <div class="ihint">Enter to send · Shift+Enter for new line</div>
+      <div class="txc" id="txc">0 on-chain transactions</div>
     </div>
   </div>
 </div>
 
 <script>
-let selectedModel = 'gpt-4o';
-let selectedModelName = 'GPT-4o';
-let txCount = 0;
-let msgCount = 0;
-let isTyping = false;
+// Hide loading after 1.8s
+setTimeout(() => {
+  const lo = document.getElementById('lo');
+  lo.style.opacity = '0';
+  setTimeout(() => lo.remove(), 500);
+}, 1800);
 
-const OG_RESPONSES = {
-  default: [
-    "OpenGradient provides verifiable AI inference on-chain. Every response I generate creates a transaction on the OpenGradient network, giving you cryptographic proof that the inference happened exactly as described.",
-    "Great question! As an AI running on OpenGradient's infrastructure, my responses are executed inside a Trusted Execution Environment (TEE) — meaning the computation is hardware-attested and tamper-proof.",
-    "OpenGradient's network uses blockchain technology to verify AI inference. This means you can trust that AI models haven't been modified or censored — the proof is on-chain and publicly verifiable.",
-    "The key innovation of OpenGradient is that AI inference becomes trustless. You don't need to trust the AI provider — you can verify the computation yourself using the transaction hash.",
-    "OpenGradient supports multiple models including GPT-4o, Llama 3, and Mistral — all running with the same verifiable, on-chain guarantees. This is the future of transparent AI.",
-  ],
-  opengradient: "OpenGradient is a Layer 1 blockchain designed specifically for AI. It enables verifiable model inference — meaning every AI computation is recorded on-chain with cryptographic proof. Backed by a16z, Coinbase Ventures, and Transformer co-inventor Illia Polosukhin, OpenGradient is building the infrastructure for trustless AI.",
-  tee: "TEE (Trusted Execution Environment) is a secure enclave inside a processor where code runs in complete isolation. OpenGradient uses Intel TDX and NVIDIA H100 GPUs with confidential compute — meaning even the infrastructure operator cannot see or tamper with the AI inference.",
-  verify: "Each inference on OpenGradient creates an on-chain transaction. The transaction hash is proof that: (1) a specific model was used, (2) the exact input was processed, (3) the output was generated without tampering. You can verify this on the OpenGradient block explorer.",
-  token: "The $OPEN token powers the OpenGradient network. It's used for paying inference fees, staking for network security, and governance. The TGE (Token Generation Event) is expected in 2026 — early contributors and developers will receive allocations.",
-};
+let model = 'gpt-4o', modelName = 'GPT-4o';
+let txCount = 0, msgCount = 0, busy = false;
 
-function selectModel(el, name, cid) {
-  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('active'));
+function setModel(el, id, name) {
+  document.querySelectorAll('.model').forEach(m => m.classList.remove('active'));
   el.classList.add('active');
-  selectedModel = cid;
-  selectedModelName = name;
-  document.getElementById('topbarModel').textContent = name + ' // OpenGradient';
+  model = id; modelName = name;
+  document.getElementById('topMod').textContent = name + ' // OpenGradient';
+  const s = name.includes('GPT') ? '4o' : name.includes('Llama') ? 'L3' : 'M7';
+  document.getElementById('sMod').textContent = s;
 }
 
-function suggest(btn) {
-  document.getElementById('chatInput').value = btn.textContent;
-  sendMessage();
+function sug(btn) {
+  document.getElementById('inp').value = btn.textContent;
+  send();
 }
 
-function generateTxHash() {
-  const chars = '0123456789abcdef';
-  return '0x' + Array.from({length: 64}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+function tx() {
+  return '0x' + Array.from({length:64}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
 }
 
-function getResponse(input) {
-  const lower = input.toLowerCase();
-  if (lower.includes('opengradient') || lower.includes('what is')) return OG_RESPONSES.opengradient;
-  if (lower.includes('tee') || lower.includes('trusted') || lower.includes('secure')) return OG_RESPONSES.tee;
-  if (lower.includes('verify') || lower.includes('verif') || lower.includes('proof')) return OG_RESPONSES.verify;
-  if (lower.includes('token') || lower.includes('$open') || lower.includes('airdrop')) return OG_RESPONSES.token;
-  return OG_RESPONSES.default[Math.floor(Math.random() * OG_RESPONSES.default.length)];
+function rmWelcome() {
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
 }
 
-function addMessage(role, content, txHash) {
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-
-  const avatar = role === 'user' ? '👤' : '⬡';
-
-  div.innerHTML = `
-    <div class="msg-avatar">${avatar}</div>
-    <div class="msg-content">
-      <div class="msg-bubble">${content}</div>
-      ${txHash ? `<div class="msg-tx" onclick="openTx('${txHash}')">
-        <span class="msg-tx-icon">⛓</span>
-        <span>TX: ${txHash.slice(0,10)}...${txHash.slice(-6)}</span>
+function addMsg(role, html, txHash) {
+  rmWelcome();
+  const msgs = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  d.innerHTML = `
+    <div class="av">${role === 'user' ? '👤' : '⬡'}</div>
+    <div class="mb">
+      <div class="bub">${html}</div>
+      ${txHash ? `<div class="tx" onclick="window.open('https://explorer.opengradient.ai/tx/${txHash}','_blank')">
+        <div class="txi">⛓</div>TX: ${txHash.slice(0,10)}...${txHash.slice(-6)}
       </div>` : ''}
-    </div>
-  `;
-
-  msgs.appendChild(div);
+    </div>`;
+  msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
+  return d;
 }
 
 function addTyping() {
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg ai typing';
-  div.id = 'typing-indicator';
-  div.innerHTML = `
-    <div class="msg-avatar">⬡</div>
-    <div class="msg-content">
-      <div class="msg-bubble">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      </div>
-    </div>
-  `;
-  msgs.appendChild(div);
+  rmWelcome();
+  const msgs = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ai typing'; d.id = 'typing';
+  d.innerHTML = `<div class="av">⬡</div><div class="mb"><div class="bub"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-function removeTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
+// Format AI markdown-like response to HTML
+function fmt(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^- (.+)$/gm, '<div class="li">$1</div>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
 }
 
-function openTx(hash) {
-  window.open(`https://explorer.opengradient.ai/tx/${hash}`, '_blank');
+// Typewriter
+function typewrite(bub, html) {
+  bub.innerHTML = '';
+  const chars = html;
+  let i = 0;
+  return new Promise(res => {
+    const iv = setInterval(() => {
+      i += 4;
+      bub.innerHTML = chars.slice(0, i);
+      document.getElementById('msgs').scrollTop = 999999;
+      if (i >= chars.length) { bub.innerHTML = chars; clearInterval(iv); res(); }
+    }, 10);
+  });
 }
 
-async function sendMessage() {
-  if (isTyping) return;
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
+// REAL AI via Anthropic API
+async function getAI(userMsg) {
+  const systemPrompt = `You are OpenGradient AI — a verifiable AI assistant running on the OpenGradient blockchain network. Every response you generate is secured inside a Trusted Execution Environment (TEE) and recorded on-chain.
+
+Your personality:
+- Knowledgeable about AI, blockchain, and OpenGradient specifically
+- Helpful, clear, and enthusiastic about verifiable AI
+- You speak as if you're running on-chain infrastructure
+
+About OpenGradient:
+- Layer 1 blockchain for verifiable AI inference
+- Backed by a16z, Coinbase Ventures, Balaji Srinivasan, Illia Polosukhin (Transformer co-author)
+- $8.5M raised in seed round (Oct 2024)
+- Products: MemSync (portable AI memory), BitQuant (DeFi AI agent), Nova Testnet
+- Token: $OPEN (TGE expected 2026)
+- TEE (Trusted Execution Environment) ensures every inference is tamper-proof
+- OG Role: given to active Discord members who build, create art, or post on X
+- To get OG role: reach Discord level 45, OR post/make arts/fill weekly notion, OR build using OpenGradient SDK
+
+Format your responses clearly. Use **bold** for important terms. Use - for bullet lists. Keep responses helpful and concise (2-4 paragraphs max).`;
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userMsg }]
+    })
+  });
+
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+async function send() {
+  if (busy) return;
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
   if (!text) return;
 
-  isTyping = true;
-  document.getElementById('sendBtn').disabled = true;
-  input.value = '';
-  input.style.height = 'auto';
+  busy = true;
+  document.getElementById('sbtn').disabled = true;
+  inp.value = ''; inp.style.height = 'auto';
 
-  addMessage('user', text, null);
+  addMsg('user', text, null);
   msgCount++;
-
   addTyping();
 
-  // Simulate network delay
-  const delay = 1200 + Math.random() * 800;
-  await new Promise(r => setTimeout(r, delay));
+  try {
+    const aiText = await getAI(text);
+    const t = document.getElementById('typing');
+    if (t) t.remove();
 
-  removeTyping();
+    const txHash = tx();
+    txCount++; msgCount++;
 
-  const response = getResponse(text);
-  const txHash = generateTxHash();
-  txCount++;
-  msgCount++;
+    const msgEl = addMsg('ai', '', txHash);
+    const bub = msgEl.querySelector('.bub');
+    await typewrite(bub, fmt(aiText));
 
-  addMessage('ai', response, txHash);
+    document.getElementById('sTx').textContent = txCount;
+    document.getElementById('sMsg').textContent = msgCount;
+    document.getElementById('txc').textContent = txCount + ' on-chain transaction' + (txCount !== 1 ? 's' : '');
+  } catch(e) {
+    const t = document.getElementById('typing');
+    if (t) t.remove();
+    addMsg('ai', '⚠️ Connection error. Please try again.', null);
+  }
 
-  document.getElementById('txCount').textContent = txCount;
-  document.getElementById('msgCount').textContent = msgCount;
-  document.getElementById('txDisplay').textContent = txCount + ' transaction' + (txCount !== 1 ? 's' : '');
-
-  isTyping = false;
-  document.getElementById('sendBtn').disabled = false;
-  input.focus();
+  busy = false;
+  document.getElementById('sbtn').disabled = false;
+  inp.focus();
 }
 
 // Auto-resize textarea
-document.getElementById('chatInput').addEventListener('input', function() {
+document.getElementById('inp').addEventListener('input', function() {
   this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  this.style.height = Math.min(this.scrollHeight, 130) + 'px';
 });
 
-document.getElementById('chatInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+document.getElementById('inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
 });
 </script>
 </body>
