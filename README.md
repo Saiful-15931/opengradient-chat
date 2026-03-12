@@ -1,10 +1,10 @@
 # ⬡ OpenGradient Chat
 
-A verifiable AI chat interface built on the OpenGradient SDK — every inference is cryptographically verified on-chain.
+A verifiable AI chat interface built on the OpenGradient SDK  every inference is cryptographically verified on-chain.
 
 ##  What is this?
 
-OpenGradient Chat is a web application that uses the OpenGradient Python SDK to run verifiable LLM inference. Unlike traditional AI chat apps, every single AI response creates a blockchain transaction — giving you cryptographic proof.
+OpenGradient Chat is a web application that uses the OpenGradient Python SDK to run verifiable LLM inference. Unlike traditional AI chat apps, every single AI response creates a blockchain transaction  giving you cryptographic proof.
 
 ##  Features
 
